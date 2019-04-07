@@ -1,6 +1,6 @@
 # Aurora
 
-    Task management system.
+    Task management system
 
     Create/Read/Update a user
     Login a user
