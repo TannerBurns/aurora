@@ -1,0 +1,6 @@
+github.com/lib/pq
+github.com/gorilla/handlers
+github.com/gorilla/mux
+github.com/gorilla/context
+github.com/dgrijalva/jwt-go
+github.com/go-sql-driver/mysql
