@@ -34,7 +34,7 @@ func UserRoutes(c *controllers.Controller) (r Routes) {
 			"CreateUserTask",
 			"Post",
 			c.Session.LiteConfig.Config["api"]["route"] + "/task",
-			controllers.AuthenticationMiddleware(c.CreateUserTask),
+			controllers.AuthenticationMiddleware(c.CreateTask),
 		},
 		Route{
 			"GetTask",
@@ -46,14 +46,21 @@ func UserRoutes(c *controllers.Controller) (r Routes) {
 			"CreateComment",
 			"Post",
 			c.Session.LiteConfig.Config["api"]["route"] + "/task/{id}/comment",
-			controllers.AuthenticationMiddleware(c.CreateNewComment),
+			controllers.AuthenticationMiddleware(c.CreateComment),
+		},
+		Route{
+			"UpdateComment",
+			"Post",
+			c.Session.LiteConfig.Config["api"]["route"] + "/task/{tid}/" +
+				"comment/{cid}",
+			controllers.AuthenticationMiddleware(c.UpdateComment),
 		},
 		Route{
 			"CreateTag",
 			"Post",
 			c.Session.LiteConfig.Config["api"]["route"] + "/task/{tid}/" +
 				"comment/{cid}/tag",
-			controllers.AuthenticationMiddleware(c.CreateNewTag),
+			controllers.AuthenticationMiddleware(c.CreateTag),
 		},
 		Route{
 			"DeleteTag",

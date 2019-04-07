@@ -2,7 +2,6 @@ package controllers
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -16,7 +15,7 @@ import (
 CreateUserTask - create a new task by current user.
 	returns 400, 401, 404 for errors
 */
-func (c *Controller) CreateUserTask(w http.ResponseWriter, req *http.Request) {
+func (c *Controller) CreateTask(w http.ResponseWriter, req *http.Request) {
 	w.Header().Set("Content-Type", "application/json; charset=UTF-8")
 	w.Header().Set("Access-Control-Allow-Origin", "*")
 
@@ -51,9 +50,8 @@ func (c *Controller) CreateUserTask(w http.ResponseWriter, req *http.Request) {
 	task.OwnerID = userprofile.ID
 
 	//create new task
-	err = userprofile.CreateNewTask(db, task)
+	err = userprofile.CreateTask(db, task)
 	if err != nil {
-		fmt.Println(err)
 		error := models.RespError{Error: "Failed to create a new task"}
 		resp, _ := json.Marshal(error)
 		http.Error(w, string(resp), 404)

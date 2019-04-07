@@ -153,7 +153,7 @@ func (up *UserProfile) UpdateUser(db *sql.DB) (err error) {
 	return
 }
 
-func (up *UserProfile) CreateNewTask(db *sql.DB, t *Task) (err error) {
+func (up *UserProfile) CreateTask(db *sql.DB, t *Task) (err error) {
 	query := `
 		with newtask as (
 			INSERT INTO task (
@@ -172,6 +172,14 @@ func (up *UserProfile) CreateNewTask(db *sql.DB, t *Task) (err error) {
 	`
 	err = db.QueryRow(query, t.OwnerID, t.Restricted, t.Status, t.Title,
 		t.Body, t.OwnerID).Scan(&t.ID)
+	if err != nil {
+		return
+	}
+	query = `
+		SELECT * FROM task WHERE id=$1;
+	`
+	err = db.QueryRow(query, t.ID).Scan(&t.ID, &t.Created, &t.Modified,
+		&t.OwnerID, &t.Restricted, &t.Status, &t.Title, &t.Body)
 	return
 }
 
@@ -229,7 +237,7 @@ func (up *UserProfile) GetTask(db *sql.DB, id int) (nt *Task, err error) {
 	return
 }
 
-func (up *UserProfile) CreateNewComment(db *sql.DB, c *Comment) (err error) {
+func (up *UserProfile) CreateComment(db *sql.DB, c *Comment) (err error) {
 	query := `
 		INSERT INTO comment (owner_id, task_id, body)
 		VALUES ($1, $2, $3)
@@ -241,7 +249,19 @@ func (up *UserProfile) CreateNewComment(db *sql.DB, c *Comment) (err error) {
 	return
 }
 
-func (up *UserProfile) CreateNewTag(db *sql.DB, t *Tag) (err error) {
+func (up *UserProfile) UpdateComment(db *sql.DB, c *Comment) (err error) {
+	query := `
+		UPDATE comment
+		SET
+			body=$1
+		WHERE
+			id=$2 AND owner_id=$3 AND task_id=$4;
+	`
+	_, err = db.Query(query, c.Body, c.ID, c.OwnerID, c.TaskID)
+	return
+}
+
+func (up *UserProfile) CreateTag(db *sql.DB, t *Tag) (err error) {
 	query := `
 		INSERT INTO tag (owner_id, comment_id, body)
 		VALUES ($1, $2, $3)
